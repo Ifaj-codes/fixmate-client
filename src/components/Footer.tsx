@@ -59,7 +59,7 @@ export default function Footer() {
                 <Linkedin className="h-4 w-4" />
               </a>
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/share/1ADnRjbHhh/"
                 target="_blank"
                 rel="noreferrer"
                 className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 hover:border-slate-400 hover:text-slate-900 dark:border-slate-800 dark:hover:text-white transition-colors"

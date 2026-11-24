@@ -103,4 +103,5 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Student ID**: 1119004 (BAIUST CSE)
 - **GitHub**: [Ifaj-codes](https://github.com/Ifaj-codes)
 - **LinkedIn**: [Nesar Uddin Ifaj](https://www.linkedin.com/in/nesar-uddin-ifaj-0a8567446)
+- **Facebook**: [Nesar Uddin Ifaj](https://www.facebook.com/share/1ADnRjbHhh/)
 - **Email**: nesaruddinifaj@gmail.com
