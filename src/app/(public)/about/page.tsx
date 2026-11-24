@@ -11,7 +11,7 @@ export default function AboutPage() {
           About FixMate Platform
         </span>
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          Revolutionizing Device & Appliance Repairs in Bangladesh
+          On-Demand Device & Appliance Repairs in Bangladesh
         </h1>
         <p className="max-w-3xl mx-auto text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-400">
           In Bangladesh and worldwide, finding a trustworthy technician has always been challenging. Consumers endure uncertainty over device handling, lack of status updates, and advance payment risks. FixMate solves this through full transparency, verified technicians, and a strict pay-after-completion guarantee.

@@ -1,107 +1,117 @@
-# FixMate — Smart Device & Home Appliance Repair Service Platform
+# FixMate — Smart Device & Home Appliance Repair Platform
 
-FixMate is a modern full-stack on-demand repair service booking platform built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, **Express.js**, **MongoDB**, **BetterAuth & JWT**, and **Stripe**.
-
-## 🌟 Project Purpose & Core Workflow
-In Bangladesh and worldwide, people struggle to find a trustworthy repair technician. After handing over a device, customers have no visibility into what is happening and often pay before any work is delivered. FixMate solves both problems:
-1. **Pay-After-Service Model**: Customers never pay in advance. The Stripe Checkout button unlocks only after the technician marks the job completed and sets the final verified price.
-2. **Transparent Job Status Pipeline**: Every job moves through strict status stages (`Requested` → `Accepted` → `In Progress` → `Completed` → `Paid`).
-3. **Verified Specialist Catalog**: Technicians list certified repair offerings, which require administrative moderation before appearing on public search listings.
+A full-stack on-demand repair service booking web application developed for **CSE-324 Web Technologies Sessional (Assignment 9)**. FixMate bridges the gap between device owners and certified hardware technicians in Bangladesh with transparent job tracking and a pay-after-service model.
 
 ---
 
-## 🛠️ Tech Stack & Key NPM Packages
-
-### Frontend
-- **Framework**: Next.js 15 (App Router, Server & Client Components)
-- **Language**: TypeScript & React 19
-- **Styling**: Tailwind CSS, PostCSS, Autoprefixer
-- **Icons**: `lucide-react`
-- **Toasts**: `sonner`
-- **Theming**: `next-themes` (Seamless Dark / Light Mode)
-- **PDF Generation**: `jspdf` (Client-side official invoice generation)
-
-### Backend & Database
-- **Runtime**: Node.js & Express.js (ES Modules)
-- **Database**: MongoDB (Atlas connection with resilient persistent local store fallback)
-- **Authentication**: JWT & BetterAuth pattern with role-based middlewares
-- **Payment Processing**: Stripe Checkout & Webhooks (Test mode)
-- **Media**: ImgBB API for technician service banners & user profile photos
+## 📌 Student & Project Details
+- **Student Name**: Nesar Uddin Ifaj
+- **Student ID**: 1119004
+- **Department**: Computer Science & Engineering (CSE)
+- **Institution**: Bangladesh Army International University of Science and Technology (BAIUST)
+- **Course**: CSE-324 Web Technologies Sessional
+- **Category**: 006 (Device & Home Appliance Repair)
 
 ---
 
-## 🔑 Test Accounts & Demo Credentials
+## 🌐 Live Deployment & Source Code
+- **Live Client Web App**: [https://fixmate-client-six-xi.vercel.app](https://fixmate-client-six-xi.vercel.app)
+- **Live Backend API**: [https://fixmate-server-blond.vercel.app](https://fixmate-server-blond.vercel.app)
+- **Client Repository**: [https://github.com/Ifaj-codes/fixmate-client](https://github.com/Ifaj-codes/fixmate-client)
+- **Server Repository**: [https://github.com/Ifaj-codes/fixmate-server](https://github.com/Ifaj-codes/fixmate-server)
 
-| Role | Email Address | Password | Privileges |
+---
+
+## 🔑 Test Credentials for Evaluation
+
+| Role | Email Address | Password | Key Responsibilities |
 | :--- | :--- | :--- | :--- |
-| **Admin** | `admin@fixmate.com` | `Admin123#` | Full system moderation, role management, revenue audit |
-| **Technician** | `rahim.tech@fixmate.com` | `Tech123#` | Add services, manage requests, advance pipeline |
-| **Technician 2** | `karim.repair@fixmate.com` | `Tech123#` | Cooling & HVAC specialist |
-| **Customer** | `customer@fixmate.com` | `User123#` | Request repairs, cancel active jobs, pay via Stripe |
+| **Admin** | `admin@fixmate.com` | `Admin123#` | Moderate technician service listings, manage user roles, audit bookings & payments |
+| **Technician** | `rahim.tech@fixmate.com` | `Tech123#` | Add repair services, toggle availability, accept/reject requests, advance pipeline, set final bill |
+| **Technician 2** | `karim.repair@fixmate.com` | `Tech123#` | AC & Refrigerator specialist |
+| **Customer** | `customer@fixmate.com` | `User123#` | Browse services, submit repair bookings, track status, pay via Stripe card simulation, leave ratings |
 
-*Tip: The Sign In page features a 1-click credential filler strip for instant testing.*
-
----
-
-## 🚀 Live Site & Deployment Links
-- **Client (Frontend)**: `https://fixmate-client.vercel.app` (or `http://localhost:3000`)
-- **Server (Backend API)**: `https://fixmate-server.onrender.com` (or `http://localhost:5000`)
+*Note: The Sign In page has a 1-click test credential button to quickly populate the form for testing.*
 
 ---
 
-## 🏆 All 4 Assignment Challenges Implemented
+## 🛠️ Tech Stack
 
-### Challenge 1: Server-Side Search, Filter & Sort on Browse Services
-- Full MongoDB `$regex`, `$match`, and `$sort` queries executed strictly on the server (no client-side `.filter()`).
-- Preserves filter state across browser reloads via URL query strings.
-- Home page category cards (`/services?category=AC`) open the catalog pre-filtered.
+### Frontend (Client)
+- **Framework**: Next.js 15 (App Router architecture)
+- **Language**: TypeScript & React 19
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
+- **Notifications**: Sonner Toaster
+- **Theme**: Light / Dark Mode support (`next-themes`)
+- **PDF Generation**: jsPDF (official downloadable receipts)
 
-### Challenge 2: JWT Token Verification & Role-Based Middlewares
-- Custom Express middlewares: `verifyToken`, `verifyCustomer`, `verifyTechnician`, and `verifyAdmin`.
-- 401 Unauthorized for missing/invalid tokens; 403 Forbidden for mismatched roles.
-- Customer ID/Email tampering prevention.
-
-### Challenge 3: Server-Enforced Job Status Pipeline & Payment Gate
-- Strict state machine: `requested` → `accepted`/`rejected` → `in-progress` → `completed` (with mandatory `finalAmount` > 0).
-- Payment gate: checkout session only created for `completed` and `unpaid` bookings owned by logged-in customer.
-
-### Challenge 4: Stripe Webhook & Idempotency
-- Raw webhook listener on `/api/payments/webhook` with signature verification.
-- `stripeSessionId` uniqueness check guarantees a payment is never saved twice.
+### Backend (Server)
+- **Runtime**: Node.js & Express.js (ES Modules)
+- **Database**: MongoDB (Atlas connection with local fallback store)
+- **Security & Auth**: JWT (JSON Web Tokens) with custom role-based middlewares
+- **Payment Processing**: Stripe Checkout integration & simulated card flow
 
 ---
 
-## 💎 Bonus Features Implemented (5 of 5)
-1. **Rating & Review**: 1-5 star rating and comment modal for completed and paid repairs.
-2. **Visual Job Timeline Tracker**: Interactive step progression modal (`Requested` → `Accepted` → `In Progress` → `Completed` → `Paid`).
-3. **Server-Side Pagination**: Full `.skip()` and `.limit()` pagination controls on `/services`.
-4. **PDF Invoice & Receipt Generator**: Downloadable official PDF repair invoices for paid jobs.
-5. **Dark & Light Mode**: Smooth theme toggle across all public pages and dashboard workspaces.
+## 🚀 Key Functional Modules
+
+### 1. Public Service Catalog
+- Server-side search by service title or keywords.
+- Dynamic filtering by category (`Smartphone`, `Laptop & PC`, `AC`, `Refrigerator`, `TV`, `Washing Machine`, `Electrical`) and service mode (`Doorstep Visit`, `Workshop Pickup`).
+- Multi-criteria sorting (Price: Low to High, High to Low, Newest).
+- Category badges on the home page pre-filter the catalog upon clicking.
+
+### 2. Customer Booking & Tracking Workflow
+- Send repair request with preferred date, contact phone, and service address.
+- Ticket number auto-generation (`Ticket #FM-XXXX`).
+- Filter bookings by status: `All`, `Active`, `To pay`, `Paid`, `Closed`.
+- Real-time 5-step visual Timeline Tracker:
+  `Requested` → `Accepted` → `In Progress` → `Completed` → `Paid`.
+- 1-5 Star Rating & Review submission unlocked once payment is confirmed.
+
+### 3. Technician Workspace
+- Overview dashboard with 4 metric cards (`Total services`, `Approved services`, `Pending requests`, `Total earnings`).
+- Direct service catalog management with CRUD operations (Add, Edit, Delete).
+- Public availability toggle switch with instant status notifications.
+- Pipeline management: Accept/Decline incoming requests, start work, and set final verified bill amount upon completion.
+
+### 4. Admin Management Dashboard
+- Moderate newly submitted technician repair listings (`Approve` or `Reject`).
+- Role assignment and moderation (`customer` ↔ `technician` ↔ `admin`).
+- Real-time platform revenue and transaction ledger.
 
 ---
 
-## 💻 Running Locally
+## 💻 Local Development Setup
 
-### 1. Backend Setup
+### 1. Clone Repositories
+```bash
+git clone https://github.com/Ifaj-codes/fixmate-client.git
+git clone https://github.com/Ifaj-codes/fixmate-server.git
+```
+
+### 2. Backend Setup
 ```bash
 cd fixmate-server
 npm install
-npm run seed     # Seeds realistic multi-role data
-npm run dev      # Starts on port 5000
+npm run seed      # Populates test users, approved services, and demo bookings
+npm run dev       # Starts Express server on http://localhost:5000
 ```
 
-### 2. Frontend Setup
+### 3. Frontend Setup
 ```bash
 cd fixmate-client
 npm install
-npm run dev      # Starts on port 3000
+npm run dev       # Starts Next.js app on http://localhost:3000
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 👨‍💻 Author & Maintainer
-- **Developer**: Nesar Uddin Ifaj
-- **Student ID**: 1119004 (BAIUST CSE)
-- **GitHub**: [Ifaj-codes](https://github.com/Ifaj-codes)
-- **LinkedIn**: [Nesar Uddin Ifaj](https://www.linkedin.com/in/nesar-uddin-ifaj-0a8567446)
-- **Facebook**: [Nesar Uddin Ifaj](https://www.facebook.com/share/1ADnRjbHhh/)
-- **Email**: nesaruddinifaj@gmail.com
+---
+
+## 👤 Developer Contact
+- **Nesar Uddin Ifaj**
+- Student ID: 1119004 | Section A | Group G1
+- Email: `nesaruddinifaj@gmail.com`
+- GitHub: [https://github.com/Ifaj-codes](https://github.com/Ifaj-codes)
+- LinkedIn: [https://www.linkedin.com/in/nesar-uddin-ifaj-0a8567446](https://www.linkedin.com/in/nesar-uddin-ifaj-0a8567446)
+- Facebook: [https://www.facebook.com/share/1ADnRjbHhh/](https://www.facebook.com/share/1ADnRjbHhh/)
