@@ -3,10 +3,33 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DashboardLayout from '@/components/DashboardLayout';
-import StatsCard from '@/components/StatsCard';
-import { Wrench, ShieldCheck, ClipboardList, PlusCircle, ArrowRight, FolderKanban } from 'lucide-react';
+import {
+  Wrench,
+  ShieldCheck,
+  ClipboardList,
+  PlusCircle,
+  ArrowRight,
+  FolderKanban,
+  DollarSign,
+  Calendar,
+  CheckCircle2
+} from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { apiRequest } from '@/lib/api';
+
+function formatDate(dateStr?: string) {
+  if (!dateStr) return 'N/A';
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  } catch {
+    return dateStr;
+  }
+}
 
 export default function TechnicianOverviewPage() {
   const { user } = useAuth();
@@ -37,84 +60,160 @@ export default function TechnicianOverviewPage() {
     loadData();
   }, []);
 
+  // Compute metrics matching Image 3
   const totalServices = services.length;
   const approvedServices = services.filter((s) => s.approvalStatus === 'approved').length;
+  const pendingReviewServices = services.filter((s) => s.approvalStatus === 'pending').length;
   const pendingRequests = requests.filter((r) => r.status === 'requested').length;
+
+  // Paid earnings calculation
+  const paidBookings = requests.filter((r) => r.paymentStatus === 'paid');
+  const totalEarnings = paidBookings.reduce((sum, r) => sum + (Number(r.finalAmount) || Number(r.basePrice) || 0), 0);
+
+  // New requests (e.g. requested or accepted)
+  const newRequestsList = requests.filter((r) => ['requested', 'accepted'].includes(r.status));
 
   return (
     <DashboardLayout allowedRoles={['technician']}>
       <div className="space-y-8">
-        {/* Welcome Header */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-              Technician Workspace: {user?.name} 🛠️
-            </h1>
-            <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Manage your hardware repair services, respond to customer requests, and mark milestones.
+        {/* Page Title & Subtitle matching Image 3 */}
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Overview
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Your services, jobs and earnings.
+          </p>
+        </div>
+
+        {/* 4 Stat Cards matching Image 3 */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Card 1: Total services */}
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+              Total services
+            </span>
+            <div className="mt-3 text-3xl font-bold text-slate-900 dark:text-white">
+              {totalServices}
+            </div>
+          </div>
+
+          {/* Card 2: Approved services */}
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+              Approved services
+            </span>
+            <div className="mt-3 text-3xl font-bold text-slate-900 dark:text-white">
+              {approvedServices}
+            </div>
+            <p className="mt-1 text-[11px] text-slate-400">
+              {pendingReviewServices} waiting for review
             </p>
           </div>
-          <Link
-            href="/dashboard/technician/add-service"
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors shrink-0"
-          >
-            <PlusCircle className="h-4 w-4" />
-            Add New Service
-          </Link>
+
+          {/* Card 3: Pending requests */}
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+              Pending requests
+            </span>
+            <div className="mt-3 text-3xl font-bold text-slate-900 dark:text-white">
+              {pendingRequests}
+            </div>
+            <p className="mt-1 text-[11px] text-slate-400">
+              Waiting for you to accept or decline
+            </p>
+          </div>
+
+          {/* Card 4: Total earnings (Dark Teal Background #044E45) */}
+          <div className="rounded-2xl bg-[#044E45] p-5 shadow-xs text-white">
+            <span className="text-xs font-semibold text-teal-100">
+              Total earnings
+            </span>
+            <div className="mt-3 text-3xl font-bold text-white">
+              ${totalEarnings}
+            </div>
+          </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-          <StatsCard
-            title="Total Services"
-            value={totalServices}
-            icon={FolderKanban}
-            description="Created repair offerings"
-            color="brand"
-          />
-          <StatsCard
-            title="Approved Services"
-            value={approvedServices}
-            icon={ShieldCheck}
-            description="Active on public catalog"
-            color="emerald"
-          />
-          <StatsCard
-            title="Pending Requests"
-            value={pendingRequests}
-            icon={ClipboardList}
-            description="Awaiting your acceptance"
-            color="amber"
-          />
-        </div>
+        {/* 2-Column Section matching Image 3: New requests & Recent earnings */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {/* Left Column: New requests */}
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                New requests
+              </h2>
+              <Link
+                href="/dashboard/technician/requests"
+                className="text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400 hover:underline"
+              >
+                Manage requests
+              </Link>
+            </div>
 
-        {/* Action Shortcuts */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Link
-            href="/dashboard/technician/requests"
-            className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs hover:border-brand-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 transition-all"
-          >
-            <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Customer Repair Requests</h3>
-              <p className="mt-1 text-xs text-slate-500">
-                You have {pendingRequests} incoming request(s) waiting for response.
+            <div className="mt-4 divide-y divide-slate-100 dark:divide-slate-800">
+              {newRequestsList.length > 0 ? (
+                newRequestsList.map((req) => {
+                  const ticketNumber = req.ticketNo || ('FM-' + (req._id?.slice(-4) || '1051'));
+                  return (
+                    <div key={req._id} className="py-3 flex items-center justify-between gap-4">
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                          {req.serviceTitle}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          {req.customerName}, preferred {formatDate(req.preferredDate)}
+                        </p>
+                      </div>
+                      <span className="text-xs font-mono font-medium text-slate-400 shrink-0">
+                        #{ticketNumber}
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="py-6 text-center text-xs text-slate-400">
+                  No pending requests right now.
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Recent earnings */}
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <div className="pb-4 border-b border-slate-100 dark:border-slate-800">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                Recent earnings
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Jobs customers have paid for
               </p>
             </div>
-            <ArrowRight className="h-5 w-5 text-brand-600" />
-          </Link>
 
-          <Link
-            href="/dashboard/technician/my-services"
-            className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs hover:border-brand-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 transition-all"
-          >
-            <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Service Catalog Management</h3>
-              <p className="mt-1 text-xs text-slate-500">
-                Update descriptions, pricing, toggle availability, and check admin reviews.
-              </p>
+            <div className="mt-4 divide-y divide-slate-100 dark:divide-slate-800">
+              {paidBookings.length > 0 ? (
+                paidBookings.map((p) => (
+                  <div key={p._id} className="py-3 flex items-center justify-between gap-4">
+                    <div className="space-y-0.5">
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                        {p.serviceTitle}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        {p.customerName}, {formatDate(p.updatedAt || p.createdAt)}
+                      </p>
+                    </div>
+                    <span className="text-base font-bold text-slate-900 dark:text-white shrink-0">
+                      ${p.finalAmount || p.basePrice}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="py-6 text-center text-xs text-slate-400">
+                  No completed paid jobs yet.
+                </p>
+              )}
             </div>
-            <ArrowRight className="h-5 w-5 text-brand-600" />
-          </Link>
+          </div>
         </div>
       </div>
     </DashboardLayout>
