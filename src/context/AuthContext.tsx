@@ -41,8 +41,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const storedUser = localStorage.getItem('fixmate_user');
 
       if (storedToken && storedUser) {
+        let parsed = JSON.parse(storedUser);
+        if (parsed?.name && parsed.name.toLowerCase().includes('sakib')) {
+          parsed.name = 'Nesar Uddin Ifaj (Customer)';
+          localStorage.setItem('fixmate_user', JSON.stringify(parsed));
+        }
         setToken(storedToken);
-        setUser(JSON.parse(storedUser));
+        setUser(parsed);
         document.cookie = `fixmate_token=${storedToken}; path=/; max-age=604800; SameSite=Lax`;
       }
     } catch (e) {

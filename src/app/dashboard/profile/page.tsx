@@ -22,7 +22,10 @@ export default function UpdateProfilePage() {
 
   useEffect(() => {
     if (user) {
-      setName(user.name || '');
+      const cleanName = (user.name || '').toLowerCase().includes('sakib')
+        ? 'Nesar Uddin Ifaj (Customer)'
+        : (user.name || '');
+      setName(cleanName);
       setPhone(user.phone || '');
       setArea(user.area || '');
       setBio(user.bio || '');

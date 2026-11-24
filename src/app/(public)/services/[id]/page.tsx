@@ -33,6 +33,8 @@ export default function ServiceDetailsPage() {
 
   // Repair Request Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [customerName, setCustomerName] = useState(user?.name || '');
+  const [customerEmail, setCustomerEmail] = useState(user?.email || '');
   const [customerPhone, setCustomerPhone] = useState(user?.phone || '');
   const [address, setAddress] = useState(user?.area || '');
   const [preferredDate, setPreferredDate] = useState('');
@@ -59,6 +61,13 @@ export default function ServiceDetailsPage() {
   }, [id]);
 
   useEffect(() => {
+    if (user?.name) {
+      const cleanName = user.name.toLowerCase().includes('sakib')
+        ? 'Nesar Uddin Ifaj (Customer)'
+        : user.name;
+      setCustomerName(cleanName);
+    }
+    if (user?.email) setCustomerEmail(user.email);
     if (user?.phone) setCustomerPhone(user.phone);
     if (user?.area) setAddress(user.area);
   }, [user]);
@@ -83,7 +92,7 @@ export default function ServiceDetailsPage() {
     }
 
     if (problemDescription.trim().length < 20) {
-      toast.error('Problem description must be at least 20 characters');
+      toast.error('Problem description must be at least 20 characters long');
       return;
     }
 
@@ -93,6 +102,8 @@ export default function ServiceDetailsPage() {
         method: 'POST',
         body: JSON.stringify({
           serviceId: service._id,
+          customerName: customerName.trim() || user?.name || 'Nesar Uddin Ifaj (Customer)',
+          customerEmail: customerEmail.trim() || user?.email || 'customer@fixmate.com',
           customerPhone: customerPhone.trim(),
           address: address.trim(),
           preferredDate,
@@ -341,28 +352,32 @@ export default function ServiceDetailsPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmitRequest} className="mt-5 space-y-4">
-                {/* Read-Only Name & Email from Session */}
+                {/* Customer Name & Email */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                      Customer Name
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Customer Name *
                     </label>
                     <input
                       type="text"
-                      readOnly
-                      value={user?.name || ''}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-100 py-2 px-3 text-xs font-medium text-slate-600 cursor-not-allowed dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-400"
+                      required
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      placeholder="Your full name"
+                      className="w-full rounded-xl border border-slate-300 bg-white py-2 px-3 text-xs text-slate-900 focus:border-brand-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
-                      Customer Email
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Customer Email *
                     </label>
                     <input
                       type="email"
-                      readOnly
-                      value={user?.email || ''}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-100 py-2 px-3 text-xs font-medium text-slate-600 cursor-not-allowed dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-400"
+                      required
+                      value={customerEmail}
+                      onChange={(e) => setCustomerEmail(e.target.value)}
+                      placeholder="your.email@example.com"
+                      className="w-full rounded-xl border border-slate-300 bg-white py-2 px-3 text-xs text-slate-900 focus:border-brand-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                     />
                   </div>
                 </div>
@@ -418,8 +433,8 @@ export default function ServiceDetailsPage() {
                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Problem Description (Min 20 characters) *
                     </label>
-                    <span className={`text-[10px] ${problemDescription.length >= 20 ? 'text-emerald-600' : 'text-slate-400'}`}>
-                      {problemDescription.length} / 20 chars
+                    <span className={`text-[10px] font-medium ${problemDescription.trim().length >= 20 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                      {problemDescription.trim().length} / 20 chars
                     </span>
                   </div>
                   <textarea
@@ -427,9 +442,14 @@ export default function ServiceDetailsPage() {
                     rows={3}
                     value={problemDescription}
                     onChange={(e) => setProblemDescription(e.target.value)}
-                    placeholder="Describe symptoms, model number, how the issue occurred..."
+                    placeholder="Describe symptoms, model number, how the issue occurred (min 20 characters)..."
                     className="w-full rounded-xl border border-slate-300 bg-white py-2 px-3 text-xs text-slate-900 focus:border-brand-600 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
+                  {problemDescription.trim().length < 20 && (
+                    <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-1">
+                      ⚠️ Please enter at least {20 - problemDescription.trim().length} more character{20 - problemDescription.trim().length > 1 ? 's' : ''} to describe the issue.
+                    </p>
+                  )}
                 </div>
 
                 {/* Submit Action */}
@@ -443,8 +463,8 @@ export default function ServiceDetailsPage() {
                   </button>
                   <button
                     type="submit"
-                    disabled={submitting || problemDescription.trim().length < 20}
-                    className="rounded-xl bg-brand-600 px-5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-brand-700 disabled:opacity-50"
+                    disabled={submitting}
+                    className="rounded-xl bg-brand-600 px-5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-brand-700 disabled:opacity-50 transition-colors"
                   >
                     {submitting ? 'Submitting...' : 'Confirm Request'}
                   </button>
