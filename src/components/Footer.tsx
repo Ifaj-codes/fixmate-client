@@ -50,7 +50,7 @@ export default function Footer() {
                 <Github className="h-4 w-4" />
               </a>
               <a
-                href="https://linkedin.com/in/nesar-uddin-ifaj"
+                href="https://www.linkedin.com/in/nesar-uddin-ifaj-0a8567446"
                 target="_blank"
                 rel="noreferrer"
                 className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 hover:border-slate-400 hover:text-slate-900 dark:border-slate-800 dark:hover:text-white transition-colors"
